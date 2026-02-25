@@ -89,6 +89,32 @@
       color: white;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+    body[data-theme="dark"] .library-tab {
+      background: rgba(138, 180, 248, 0.1);
+      color: #9aa0a6;
+      border-color: rgba(138, 180, 248, 0.2);
+    }
+    body[data-theme="dark"] .library-tab:hover {
+      background: rgba(138, 180, 248, 0.2);
+      border-color: #8ab4f8;
+    }
+    body[data-theme="dark"] .library-tab.active {
+      background: linear-gradient(135deg, #8ab4f8 0%, #aecbfa 100%);
+      color: #000000;
+      box-shadow: 0 0 15px rgba(138, 180, 248, 0.5);
+    }
+    body[data-theme="dark"] .source-item {
+      color: #9aa0a6;
+    }
+    body[data-theme="dark"] .source-item:hover {
+      background: rgba(138, 180, 248, 0.1);
+      border-left-color: #8ab4f8;
+    }
+    body[data-theme="dark"] .source-item.active {
+      background: linear-gradient(90deg, #8ab4f8 0%, rgba(138, 180, 248, 0.3) 100%);
+      color: #000000;
+      box-shadow: 0 0 15px rgba(138, 180, 248, 0.3);
+    }
 
     .content-card {
       background: var(--card-bg);
@@ -123,13 +149,17 @@
     body[data-theme="dark"] {
       --sidebar-bg: #1a237e;
       --main-bg: #000000;
-      --border-color: rgba(138, 180, 248, 0.4);
-      --border-main: rgba(138, 180, 248, 0.4);
+      --border-color: rgba(138, 180, 248, 0.5);
+      --border-main: rgba(138, 180, 248, 0.5);
       --text-primary: #ffffff;
-      --text-secondary: #cccccc;
-      --card-bg: #000000;
+      --text-secondary: #b0b8c4;
+      --card-bg: rgba(255, 255, 255, 0.03);
       --text-main: #e8eaed;
-      --text-light: #9aa0a6;
+      --text-light: #b0b8c4;
+      --highlight: #8ab4f8;
+      --stroke: #8ab4f8;
+      --secondary: rgba(138, 180, 248, 0.15);
+      --tertiary: rgba(138, 180, 248, 0.08);
     }
 
     body[data-theme="dark"] .page-title {
@@ -137,27 +167,44 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      text-shadow: 0 0 30px rgba(138, 180, 248, 0.4);
+      text-shadow: 0 0 30px rgba(138, 180, 248, 0.5);
     }
 
-    body[data-theme="dark"] .sidebar {
-      background: linear-gradient(135deg, #101840 0%, #0d1428 100%);
-      border-color: rgba(138, 180, 248, 0.4) !important;
+    body[data-theme="dark"] #authorSidebar { 
+      background: radial-gradient(ellipse at top left, rgba(255,255,255,0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at bottom right, rgba(255,255,255,0.05) 0%, transparent 50%),
+                  linear-gradient(135deg, #101840 0%, #0d1428 100%) !important;
+      border-color: rgba(138, 180, 248, 0.5) !important;
+      box-shadow: 0 0 20px rgba(138, 180, 248, 0.1);
     }
 
-    body[data-theme="dark"] main {
-      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-      border-color: rgba(138, 180, 248, 0.4) !important;
+    body[data-theme="dark"] main { 
+      background: radial-gradient(ellipse at top left, rgba(255,255,255,0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at bottom right, rgba(255,255,255,0.05) 0%, transparent 50%),
+                  linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%) !important;
+      border-color: rgba(138, 180, 248, 0.5) !important;
+      box-shadow: 0 0 30px rgba(138, 180, 248, 0.1);
     }
 
     body[data-theme="dark"] .content-card {
-      background: #1a1a1a;
-      border-color: rgba(138, 180, 248, 0.4);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(138, 180, 248, 0.3);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    body[data-theme="dark"] .content-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(138, 180, 248, 0.5);
+      box-shadow: 0 8px 30px rgba(138, 180, 248, 0.15);
+    }
+
+    body[data-theme="dark"] header {
+      background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+      border-color: rgba(138, 180, 248, 0.3) !important;
     }
 
     body[data-theme="dark"] .toolbar {
-      background: linear-gradient(135deg, #101840 0%, #0d1428 100%);
-      border-color: rgba(138, 180, 248, 0.4) !important;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+      border-color: rgba(138, 180, 248, 0.3) !important;
     }
 
     .theme-btn {
@@ -173,15 +220,23 @@
     }
     body[data-theme="dark"] .theme-btn {
       border: 2px solid #8ab4f8;
+      box-shadow: 0 0 10px rgba(138, 180, 248, 0.3);
+    }
+    body[data-theme="dark"] .theme-btn:hover {
+      box-shadow: 0 0 20px rgba(138, 180, 248, 0.5);
+      transform: scale(1.05);
     }
 
     .toggle-text { color: var(--text-secondary); }
     body[data-theme="light"] .toggle-text:hover { color: var(--highlight); }
-    body[data-theme="dark"] .toggle-text:hover { color: #ffffff; }
+    body[data-theme="dark"] .toggle-text:hover { color: #8ab4f8; text-shadow: 0 0 10px rgba(138, 180, 248, 0.5); }
 
     .toggle-bg { background: var(--main-bg); border-color: var(--border-color); }
+    body[data-theme="dark"] .toggle-bg { background: rgba(255, 255, 255, 0.05); }
     .toggle-card { background: var(--card-bg); border-color: var(--border-color); color: var(--text-primary); }
+    body[data-theme="dark"] .toggle-card { background: rgba(255, 255, 255, 0.05); border-color: rgba(138, 180, 248, 0.3); }
     .toggle-input { background: var(--sidebar-bg); border-color: var(--border-color); color: var(--text-primary); }
+    body[data-theme="dark"] .toggle-input { background: rgba(255, 255, 255, 0.08); border-color: rgba(138, 180, 248, 0.3); color: #e8eaed; }
 
     .tag-chip {
       display: inline-flex;
@@ -196,8 +251,9 @@
     }
 
     body[data-theme="dark"] .tag-chip {
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      color: rgba(255, 255, 255, 0.8);
+      border-color: rgba(138, 180, 248, 0.5);
+      color: #8ab4f8;
+      box-shadow: 0 0 8px rgba(138, 180, 248, 0.2);
     }
 
     .lang-chip {
@@ -305,9 +361,13 @@
     .rich-editor {
       min-height: 100px;
       max-height: 200px;
-      border-radius: 0 0 8px 8px;
+      border-radius: 8px;
       outline: none;
       overflow-y: auto;
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      background: #ffffff;
+      transition: all 0.2s;
     }
     .rich-editor:empty:before {
       content: attr(placeholder);
@@ -316,6 +376,15 @@
     }
     .rich-editor:focus {
       border-color: var(--highlight);
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .rich-toolbar {
+      background: var(--tertiary);
+      border-radius: 8px 8px 0 0;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-bottom: none;
     }
 
     .btn-primary {
@@ -337,6 +406,11 @@
     body[data-theme="dark"] .btn-primary {
       background: linear-gradient(135deg, #8ab4f8 0%, #aecbfa 100%);
       color: #000000;
+      box-shadow: 0 0 15px rgba(138, 180, 248, 0.4);
+    }
+    body[data-theme="dark"] .btn-primary:hover {
+      box-shadow: 0 0 25px rgba(138, 180, 248, 0.6);
+      transform: translateY(-2px);
     }
 
     .btn-secondary {
@@ -353,11 +427,13 @@
     }
 
     body[data-theme="dark"] .btn-secondary {
-      border-color: rgba(138, 180, 248, 0.4);
+      border-color: rgba(138, 180, 248, 0.5);
       color: #8ab4f8;
+      background: rgba(138, 180, 248, 0.05);
     }
     body[data-theme="dark"] .btn-secondary:hover {
-      background: rgba(138, 180, 248, 0.1);
+      background: rgba(138, 180, 248, 0.15);
+      box-shadow: 0 0 15px rgba(138, 180, 248, 0.3);
     }
 
     .btn-laser {
@@ -371,14 +447,9 @@
       box-shadow: 0 0 12px rgba(255, 139, 167, 0.3);
     }
 
-    body[data-theme="dark"] .btn-laser {
-      border-color: #8ab4f8;
-      color: #8ab4f8;
-      box-shadow: 0 0 8px rgba(138, 180, 248, 0.2);
-    }
     body[data-theme="dark"] .btn-laser:hover {
-      background: rgba(138, 180, 248, 0.1);
-      box-shadow: 0 0 12px rgba(138, 180, 248, 0.3);
+      background: rgba(138, 180, 248, 0.15);
+      box-shadow: 0 0 20px rgba(138, 180, 248, 0.5);
     }
 
     .btn-danger {
@@ -395,11 +466,11 @@
     body[data-theme="dark"] .btn-danger {
       border-color: #f28b82;
       color: #f28b82;
-      box-shadow: 0 0 8px rgba(242, 139, 130, 0.2);
+      box-shadow: 0 0 10px rgba(242, 139, 130, 0.3);
     }
     body[data-theme="dark"] .btn-danger:hover {
-      background: rgba(242, 139, 130, 0.1);
-      box-shadow: 0 0 12px rgba(242, 139, 130, 0.3);
+      background: rgba(242, 139, 130, 0.15);
+      box-shadow: 0 0 20px rgba(242, 139, 130, 0.5);
     }
 
     .modal-input {
@@ -412,16 +483,22 @@
       font-size: 0.95rem;
     }
     body[data-theme="dark"] .modal-input {
-      background: #292a2d;
-      border: 1px solid #555555;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(138, 180, 248, 0.3);
       color: #e8eaed;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     body[data-theme="dark"] .modal-input::placeholder {
-      color: #9aa0a6;
+      color: #6b7280;
     }
     body[data-theme="dark"] .modal-input:focus {
       border-color: #8ab4f8;
       outline: none;
+      box-shadow: 0 0 15px rgba(138, 180, 248, 0.3);
+    }
+    body[data-theme="dark"] .modal-input option {
+      background: #1a1a2e;
+      color: #e8eaed;
     }
 
     .modal-textarea {
@@ -437,13 +514,90 @@
       font-family: inherit;
     }
     body[data-theme="dark"] .modal-textarea {
-      background: #292a2d;
-      border: 1px solid #555555;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(138, 180, 248, 0.3);
       color: #e8eaed;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     body[data-theme="dark"] .modal-textarea:focus {
       border-color: #8ab4f8;
       outline: none;
+      box-shadow: 0 0 15px rgba(138, 180, 248, 0.3);
+    }
+
+    /* Modal overlay styles */
+    body[data-theme="dark"] #modalOverlay {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    body[data-theme="dark"] #modalOverlay > div {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
+      border: 1px solid rgba(138, 180, 248, 0.3);
+      box-shadow: 0 0 40px rgba(138, 180, 248, 0.2);
+    }
+    body[data-theme="dark"] #modalOverlay .page-title {
+      background: linear-gradient(135deg, #8ab4f8 0%, #aecbfa 50%, #8ab4f8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    body[data-theme="dark"] #modalOverlay .border-t {
+      border-color: rgba(138, 180, 248, 0.3) !important;
+    }
+    body[data-theme="dark"] #modalOverlay label {
+      color: #b0b8c4;
+    }
+    body[data-theme="dark"] #modalOverlay .rich-editor {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(138, 180, 248, 0.3);
+      color: #e8eaed;
+    }
+    body[data-theme="dark"] #modalOverlay .rich-editor:focus {
+      border-color: #8ab4f8;
+      box-shadow: 0 0 15px rgba(138, 180, 248, 0.3);
+    }
+    body[data-theme="dark"] #modalOverlay .rich-toolbar {
+      background: rgba(138, 180, 248, 0.1);
+      border-radius: 6px;
+    }
+    body[data-theme="dark"] #modalOverlay .toolbar-btn {
+      color: #8ab4f8;
+      background: rgba(138, 180, 248, 0.1);
+    }
+    body[data-theme="dark"] #modalOverlay .toolbar-btn:hover {
+      background: rgba(138, 180, 248, 0.2);
+    }
+    body[data-theme="dark"] #modalOverlay .color-picker {
+      background: rgba(138, 180, 248, 0.1);
+      border-color: rgba(138, 180, 248, 0.3);
+    }
+
+    /* Full view modal */
+    body[data-theme="dark"] #fullViewOverlay {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    body[data-theme="dark"] #fullViewOverlay > div {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
+      border: 1px solid rgba(138, 180, 248, 0.3);
+      box-shadow: 0 0 40px rgba(138, 180, 248, 0.2);
+    }
+
+    /* Extract modal */
+    body[data-theme="dark"] #extractOverlay {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    body[data-theme="dark"] #extractOverlay > div {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
+      border: 1px solid rgba(138, 180, 248, 0.3);
+      box-shadow: 0 0 40px rgba(138, 180, 248, 0.2);
+    }
+
+    /* Edit extract modal */
+    body[data-theme="dark"] #editExtractOverlay {
+      background: rgba(0, 0, 0, 0.7);
+    }
+    body[data-theme="dark"] #editExtractOverlay > div {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
+      border: 1px solid rgba(138, 180, 248, 0.3);
+      box-shadow: 0 0 40px rgba(138, 180, 248, 0.2);
     }
 
     .quote-text {
@@ -454,20 +608,32 @@
       max-height: calc(1.15rem * 1.8 * 6);
       overflow-y: auto;
     }
+    body[data-theme="dark"] .quote-text {
+      color: #e8eaed;
+    }
     .quote-text::before {
       content: '"';
       color: var(--highlight);
       font-size: 1.5rem;
+    }
+    body[data-theme="dark"] .quote-text::before {
+      text-shadow: 0 0 10px var(--highlight);
     }
     .quote-text::after {
       content: '"';
       color: var(--highlight);
       font-size: 1.5rem;
     }
+    body[data-theme="dark"] .quote-text::after {
+      text-shadow: 0 0 10px var(--highlight);
+    }
 
     .quote-source {
       font-size: 0.8rem;
       color: var(--text-secondary);
+    }
+    body[data-theme="dark"] .quote-source {
+      color: #b0b8c4;
     }
 
     .quote-thought {
@@ -478,6 +644,43 @@
       border-radius: 8px;
       border-left: 3px solid var(--highlight);
       opacity: 0.85;
+    }
+    body[data-theme="dark"] .quote-thought {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(138, 180, 248, 0.3);
+      border-left: 3px solid rgba(138, 180, 248, 0.5);
+      box-shadow: inset 0 2px 10px rgba(138, 180, 248, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #e8eaed;
+    }
+
+    .extracted-word {
+      background: var(--tertiary);
+      border: 1px dashed var(--border-color);
+      border-radius: 6px;
+      padding: 8px;
+    }
+    body[data-theme="dark"] .extracted-section {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed rgba(138, 180, 248, 0.3);
+      box-shadow: inset 0 2px 10px rgba(138, 180, 248, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    body[data-theme="dark"] .extracted-word {
+      background: rgba(138, 180, 248, 0.05);
+      border: 1px dashed rgba(138, 180, 248, 0.4);
+      box-shadow: inset 0 2px 8px rgba(138, 180, 248, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #e8eaed;
+    }
+    body[data-theme="dark"] .extracted-word .text-xs {
+      color: #b0b8c4 !important;
+    }
+    body[data-theme="dark"] .font-bold {
+      color: #e8eaed;
     }
 
     .quote-category {
@@ -498,20 +701,25 @@
       color: white;
     }
     body[data-theme="dark"] .view-btn.active {
-      background: #8ab4f8;
+      background: linear-gradient(135deg, #8ab4f8 0%, #aecbfa 100%);
       color: #000000;
+      box-shadow: 0 0 15px rgba(138, 180, 248, 0.5);
     }
     .view-btn:hover:not(.active) {
       background: var(--tertiary);
     }
     body[data-theme="dark"] .view-btn:hover:not(.active) {
       background: rgba(138, 180, 248, 0.1);
+      color: #8ab4f8;
     }
 
     .empty-state {
       text-align: center;
       padding: 60px 20px;
       color: var(--text-secondary);
+    }
+    body[data-theme="dark"] .empty-state {
+      color: #6b7280;
     }
 
     .color-scheme-btn {
@@ -527,18 +735,6 @@
 
     body[data-theme="dark"] #colorSchemeList {
       display: none;
-    }
-
-    body[data-theme="dark"] #authorSidebar {
-      background: radial-gradient(ellipse at top left, rgba(255,255,255,0.08) 0%, transparent 50%),
-                  radial-gradient(ellipse at bottom right, rgba(255,255,255,0.05) 0%, transparent 50%),
-                  linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%) !important;
-    }
-
-    body[data-theme="dark"] main {
-      background: radial-gradient(ellipse at top left, rgba(255,255,255,0.08) 0%, transparent 50%),
-                  radial-gradient(ellipse at bottom right, rgba(255,255,255,0.05) 0%, transparent 50%),
-                  linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
     }
   </style>
 </head>
@@ -567,7 +763,8 @@
         <div class="flex gap-2 flex-wrap items-center">
           <div id="colorSchemeList" class="flex gap-1"></div>
           <button onclick="exportData()" class="btn-secondary text-sm px-3 py-1">导出</button>
-          <button onclick="importData()" class="btn-secondary text-sm px-3 py-1">导入</button>
+          <input type="file" id="importFileInput" class="hidden" accept=".json" onchange="importData(this)">
+          <button onclick="document.getElementById('importFileInput').click()" class="btn-secondary text-sm px-3 py-1">导入</button>
           <button onclick="toggleTheme()" class="theme-btn">🌙</button>
           <button onclick="openModal()" class="btn-primary">+ 添加</button>
         </div>
@@ -643,6 +840,10 @@
             </select>
           </div>
           <div id="quoteText" class="rich-editor modal-textarea" contenteditable="true" required placeholder="那句让你印象深刻的话..."></div>
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm mb-1" style="color: var(--text-secondary);">翻译（可选）</label>
+          <textarea id="quoteTranslation" class="modal-textarea" rows="2" placeholder="翻译..."></textarea>
         </div>
         <div class="mb-3">
           <label class="block text-sm mb-1" style="color: var(--text-secondary);">出处类型</label>
@@ -834,20 +1035,18 @@
       
       const langLabels = quote.languages ? quote.languages.map(l => `<span class="lang-chip" data-lang="${l}">${getLangLabel(l)}</span>`).join('') : '';
       const extractedHtml = quote.extractedWords && quote.extractedWords.length > 0 
-        ? `<div class="extracted-section mt-4 pt-3" style="border-top: 1px dashed var(--border-color);">
-            <div class="text-xs font-bold mb-2" style="color: var(--text-secondary);">✨ 提取的词句</div>
-            <div class="space-y-2">${quote.extractedWords.map((w, wi) => `
-              <div class="extracted-word p-2 rounded" style="background: var(--tertiary);">
-                <div class="font-bold">${escapeHtml(w.word)} ${w.meaning ? '<span class="text-xs" style="color: var(--text-secondary);">- ' + escapeHtml(w.meaning) + '</span>' : ''}</div>
-              </div>
-            `).join('')}</div>
-          </div>` : '';
+        ? `<div class="space-y-2">${quote.extractedWords.map((w, wi) => `
+          <div class="extracted-word p-2 rounded">
+            <div class="font-bold">${escapeHtml(w.word)} ${w.meaning ? '<span class="text-xs" style="color: var(--text-secondary);">- ' + escapeHtml(w.meaning) + '</span>' : ''}</div>
+          </div>
+        `).join('')}</div>` : '';
       
       document.getElementById('fullViewContent').innerHTML = `
         ${langLabels ? `<div class="flex gap-1 mb-3">${langLabels}</div>` : ''}
         <div class="quote-text expanded mb-3">${quote.text}</div>
-        ${quote.category ? `<div class="quote-category mb-3 text-sm" style="color: var(--highlight);">📁 ${escapeHtml(quote.category)}</div>` : ''}
+        ${quote.translation ? `<div class="text-sm mb-3" style="color: var(--text-secondary); font-style: italic;">${escapeHtml(quote.translation)}</div>` : ''}
         ${quote.source ? `<div class="quote-source mb-3">—— ${escapeHtml(quote.source)}${quote.author ? ' / ' + escapeHtml(quote.author) : ''}</div>` : ''}
+        ${quote.category ? `<div class="quote-category mb-3 text-sm" style="color: var(--highlight);">📁 ${escapeHtml(quote.category)}</div>` : ''}
         ${quote.thought ? `<div class="quote-thought mb-3"><div style="display:contents;">${quote.thought.replace(/\n/g, '<br>')}</div></div>` : ''}
         ${quote.tags && quote.tags.length ? `<div class="flex gap-1 flex-wrap mb-3">${quote.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
         ${extractedHtml}
@@ -1169,6 +1368,7 @@
       document.getElementById('modalTitle').textContent = quote ? '编辑名言' : '添加名言';
       
       document.getElementById('quoteText').innerHTML = quote ? quote.text : '';
+      document.getElementById('quoteTranslation').value = quote ? (quote.translation || '') : '';
       document.getElementById('quoteCategory').value = quote ? (quote.category || '') : '';
       document.getElementById('quoteSource').value = quote ? (quote.source || '') : '';
       document.getElementById('quoteAuthor').value = quote ? (quote.author || '') : '';
@@ -1191,6 +1391,7 @@
       document.getElementById('modalOverlay').classList.add('hidden');
       document.getElementById('quoteForm').reset();
       document.getElementById('quoteText').innerHTML = '';
+      document.getElementById('quoteTranslation').value = '';
       document.getElementById('quoteThought').innerHTML = '';
       document.getElementById('quoteAuthor').value = '';
       toggleAuthorField();
@@ -1322,6 +1523,7 @@
       e.preventDefault();
       
       const text = document.getElementById('quoteText').innerHTML.trim();
+      const translation = document.getElementById('quoteTranslation').value.trim();
       const category = document.getElementById('quoteCategory').value;
       const source = document.getElementById('quoteSource').value.trim();
       const author = document.getElementById('quoteAuthor').value.trim();
@@ -1336,6 +1538,7 @@
       const quote = {
         id: editingId || Date.now(),
         text,
+        translation,
         category,
         source,
         author,
@@ -1454,19 +1657,16 @@
     function renderCard(q) {
       const langLabels = q.languages ? q.languages.map(l => `<span class="lang-chip" data-lang="${l}">${getLangLabel(l)}</span>`).join('') : '';
       const extractedHtml = q.extractedWords && q.extractedWords.length > 0 
-        ? `<div class="extracted-section mt-3 pt-3" style="border-top: 1px dashed var(--border-color);">
-            <div class="text-xs font-bold mb-2" style="color: var(--text-secondary);">✨ 提取的词句</div>
-            <div class="space-y-2">${q.extractedWords.map((w, wi) => `
-              <div class="extracted-word p-2 rounded mb-2" style="background: var(--tertiary);">
-                <div class="font-bold">${escapeHtml(w.word)}</div>
-                ${w.meaning ? '<div class="text-xs" style="color: var(--text-secondary); white-space: pre-wrap;">' + escapeHtml(w.meaning).replace(/\n/g, '<br>') + '</div>' : ''}
-                <div class="flex gap-2 mt-1">
-                  <button onclick="openEditExtractModal(${q.id}, ${wi})" class="text-xs" style="color: var(--highlight);">编辑</button>
-                  <button onclick="deleteExtractWord(${q.id}, ${wi})" class="text-xs text-red-500">删除</button>
-                </div>
-              </div>
-            `).join('')}</div>
-          </div>` : '';
+        ? `<div class="space-y-2">${q.extractedWords.map((w, wi) => `
+          <div class="extracted-word p-2 rounded mb-2">
+            <div class="font-bold">${escapeHtml(w.word)}</div>
+            ${w.meaning ? '<div class="text-xs" style="color: var(--text-secondary); white-space: pre-wrap;">' + escapeHtml(w.meaning).replace(/\n/g, '<br>') + '</div>' : ''}
+            <div class="flex gap-2 mt-1">
+              <button onclick="openEditExtractModal(${q.id}, ${wi})" class="text-xs" style="color: var(--highlight);">编辑</button>
+              <button onclick="deleteExtractWord(${q.id}, ${wi})" class="text-xs text-red-500">删除</button>
+            </div>
+          </div>
+        `).join('')}</div>` : '';
       
       const tempDiv = document.createElement('div');
       tempDiv.style.width = '100%';
@@ -1487,9 +1687,9 @@
         <div class="content-card">
           ${langLabels ? `<div class="flex gap-1 mb-2">${langLabels}</div>` : ''}
           <div class="quote-text mb-2" style="${needsScroll ? 'max-height: calc(1rem * 1.8 * 6); overflow-y: auto;' : ''}">${q.text}</div>
-          ${q.author ? `<div class="quote-author mb-2" style="font-size: 0.9rem; color: var(--text-secondary);">${escapeHtml(q.author)}</div>` : ''}
-          ${q.category ? `<div class="quote-category mb-2" style="color: var(--highlight);">📁 ${escapeHtml(q.category)}</div>` : ''}
+          ${q.translation ? `<div class="text-sm mb-2" style="color: var(--text-secondary); font-style: italic;">${escapeHtml(q.translation)}</div>` : ''}
           ${q.source ? `<div class="quote-source mb-2">—— ${escapeHtml(q.source)}</div>` : ''}
+          ${q.category ? `<div class="quote-category mb-2" style="color: var(--highlight);">📁 ${escapeHtml(q.category)}</div>` : ''}
           ${q.thought ? `<div class="quote-thought mb-2"><div style="display:contents;">${q.thought.replace(/\n/g, '<br>')}</div></div>` : ''}
           ${q.tags && q.tags.length ? `<div class="flex gap-1 flex-wrap mb-2">${q.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
           ${extractedHtml}
@@ -1507,21 +1707,19 @@
     function renderListItem(q) {
       const langLabels = q.languages ? q.languages.map(l => `<span class="lang-chip" data-lang="${l}">${getLangLabel(l)}</span>`).join('') : '';
       const extractedHtml = q.extractedWords && q.extractedWords.length > 0 
-        ? `<div class="mt-3 pt-3" style="border-top: 1px dashed var(--border-color);">
-            <div class="text-xs font-bold mb-2" style="color: var(--text-secondary);">✨ 提取的词句</div>
-            <div class="space-y-2">${q.extractedWords.map((w, wi) => `
-              <div class="p-2 rounded" style="background: var(--tertiary);">
-                <div class="font-bold">${escapeHtml(w.word)} ${w.meaning ? '<span class="text-xs" style="color: var(--text-secondary);">- ' + escapeHtml(w.meaning) + '</span>' : ''} <button onclick="deleteExtractWord(${q.id}, ${wi})" class="text-xs text-red-500 ml-1">×</button></div>
-              </div>
-            `).join('')}</div>
-          </div>` : '';
+        ? `<div class="space-y-2">${q.extractedWords.map((w, wi) => `
+          <div class="extracted-word p-2 rounded">
+            <div class="font-bold">${escapeHtml(w.word)} ${w.meaning ? '<span class="text-xs" style="color: var(--text-secondary);">- ' + escapeHtml(w.meaning) + '</span>' : ''} <button onclick="deleteExtractWord(${q.id}, ${wi})" class="text-xs text-red-500 ml-1">×</button></div>
+          </div>
+        `).join('')}</div>` : '';
       return `
         <div class="content-card flex gap-4">
           <div class="flex-1">
             ${langLabels ? `<div class="flex gap-1 mb-2">${langLabels}</div>` : ''}
             <div class="quote-text mb-1">${q.text}</div>
-            ${q.category ? `<div class="quote-category mb-2 text-sm" style="color: var(--highlight);">📁 ${escapeHtml(q.category)}</div>` : ''}
+            ${q.translation ? `<div class="text-sm mb-2" style="color: var(--text-secondary); font-style: italic;">${escapeHtml(q.translation)}</div>` : ''}
             ${q.source ? `<div class="quote-source mb-2">—— ${escapeHtml(q.source)}${q.author ? ' / ' + escapeHtml(q.author) : ''}</div>` : ''}
+            ${q.category ? `<div class="quote-category mb-2 text-sm" style="color: var(--highlight);">📁 ${escapeHtml(q.category)}</div>` : ''}
             ${q.thought ? `<div class="quote-thought mb-2"><div style="display:contents;">${q.thought.replace(/\n/g, '<br>')}</div></div>` : ''}
             ${q.tags && q.tags.length ? `<div class="flex gap-1 flex-wrap mb-2">${q.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
             ${extractedHtml}
@@ -1540,10 +1738,9 @@
     function renderTimelineItem(q) {
       const langLabels = q.languages ? q.languages.map(l => `<span class="lang-chip" data-lang="${l}">${getLangLabel(l)}</span>`).join('') : '';
       const extractedHtml = q.extractedWords && q.extractedWords.length > 0 
-        ? `<div class="mt-3 pt-3" style="border-top: 1px dashed var(--border-color);">
-            <div class="text-xs font-bold mb-2" style="color: var(--text-secondary);">✨ 提取的词句</div>
+        ? `<div class="mt-3 extracted-section">
             <div class="space-y-2">${q.extractedWords.map((w, wi) => `
-              <div class="p-2 rounded" style="background: var(--tertiary);">
+              <div class="extracted-word p-2 rounded">
                 <div class="font-bold">${escapeHtml(w.word)} ${w.meaning ? '<span class="text-xs" style="color: var(--text-secondary);">- ' + escapeHtml(w.meaning) + '</span>' : ''} <button onclick="deleteExtractWord(${q.id}, ${wi})" class="text-xs text-red-500 ml-1">×</button></div>
               </div>
             `).join('')}</div>
@@ -1554,8 +1751,9 @@
           <div class="content-card">
             ${langLabels ? `<div class="flex gap-1 mb-2">${langLabels}</div>` : ''}
             <div class="quote-text mb-1">${q.text}</div>
-            ${q.category ? `<div class="quote-category mb-2 text-sm" style="color: var(--highlight);">📁 ${escapeHtml(q.category)}</div>` : ''}
+            ${q.translation ? `<div class="text-sm mb-2" style="color: var(--text-secondary); font-style: italic;">${escapeHtml(q.translation)}</div>` : ''}
             ${q.source ? `<div class="quote-source mb-2">—— ${escapeHtml(q.source)}${q.author ? ' / ' + escapeHtml(q.author) : ''}</div>` : ''}
+            ${q.category ? `<div class="quote-category mb-2 text-sm" style="color: var(--highlight);">📁 ${escapeHtml(q.category)}</div>` : ''}
             ${q.thought ? `<div class="quote-thought mb-2"><div style="display:contents;">${q.thought.replace(/\n/g, '<br>')}</div></div>` : ''}
             ${q.tags && q.tags.length ? `<div class="flex gap-1 flex-wrap mb-2">${q.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
             ${extractedHtml}
@@ -1588,8 +1786,8 @@
       URL.revokeObjectURL(url);
     }
 
-    function importData(e) {
-      const file = e.target.files[0];
+    function importData(input) {
+      const file = input.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -1599,6 +1797,7 @@
             quotes = [...imported, ...quotes];
             saveQuotes();
             renderTags();
+            renderSources();
             renderQuotes();
             alert('导入成功！');
           } else {
@@ -1609,7 +1808,7 @@
         }
       };
       reader.readAsText(file);
-      e.target.value = '';
+      input.value = '';
     }
 
     init();
