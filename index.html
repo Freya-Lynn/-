@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自愈集</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1a73e8',
+            'primary-hover': '#1557b0',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: "Google Sans", "Product Sans", Arial, sans-serif; 
+    }
+
+    :root {
+      --stroke: #33272a;
+      --main: #ffffff;
+      --bg-page: #fafafa;
+      --sidebar-bg: #ffc6c7;
+      --highlight: #ff8ba7;
+      --secondary: #ffc6c7;
+      --tertiary: #c3f0ca;
+      --text-main: #33272a;
+      --text-light: #5a4e50;
+      --border-main: #140507d9;
+      --border-sub: #dee2e8;
+      --border-color: #5D4037;
+      --text-primary: #33272a;
+      --text-secondary: #5a4e50;
+      --card-bg: #ffffff;
+    }
+
+    body[data-theme="light"] {
+      background: var(--bg-page);
+    }
+
+    #authorSidebar {
+      cursor: pointer;
+    }
+    #authorSidebar:hover,
+    #authorSidebar.expanded {
+      width: 250px !important;
+    }
+    .library-tab {
+      padding: 4px 8px;
+      font-size: 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--tertiary);
+      color: var(--text-secondary);
+      border: 1px solid transparent;
+    }
+    .library-tab:hover {
+      background: var(--secondary);
+      border-color: var(--highlight);
+      transform: translateY(-1px);
+    }
+    .library-tab.active {
+      background: linear-gradient(135deg, var(--highlight) 0%, var(--stroke) 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .source-item {
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .source-item:hover {
+      background: var(--tertiary);
+      border-left-color: var(--highlight);
+      transform: translateX(2px);
+    }
+    .source-item.active {
+      background: linear-gradient(90deg, var(--highlight) 0%, var(--secondary) 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .content-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.2s;
+      font-size: 1.15rem;
+    }
+    .content-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .clear-both {
+      clear: both;
+    }
+
+    .page-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      font-family: 'Segoe UI Black', 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--highlight) 0%, var(--stroke) 50%, var(--highlight) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    body[data-theme="dark"] {
+      background: #000000;
+    }
+
+    body[data-theme="dark"] {
+      --sidebar-bg: #1a237e;
+      --main-bg: #000000;
+      --border-color: rgba(138, 180, 248, 0.4);
+      --border-main: rgba(138, 180, 248, 0.4);
+      --text-primary: #ffffff;
+      --text-secondary: #cccccc;
+      --card-bg: #000000;
+      --text-main: #e8eaed;
+      --text-light: #9aa0a6;
+    }
+
+    body[data-theme="dark"] .page-title {
+      background: linear-gradient(135deg, #8ab4f8 0%, #aecbfa 50%, #8ab4f8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(138, 180, 248, 0.4);
+    }
+
+    body[data-theme="dark"] .sidebar {
+      background: linear-gradient(135deg, #101840 0%, #0d1428 100%);
+      border-color: rgba(138, 180, 248, 0.4) !important;
+    }
+
+    body[data-theme="dark"] main {
+      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+      border-color: rgba(138, 180, 248, 0.4) !important;
+    }
+
+    body[data-theme="dark"] .content-card {
+      background: #1a1a1a;
+      border-color: rgba(138, 180, 248, 0.4);
+    }
+
+    body[data-theme="dark"] .toolbar {
+      background: linear-gradient(135deg, #101840 0%, #0d1428 100%);
+      border-color: rgba(138, 180, 248, 0.4) !important;
+    }
+
+    .theme-btn {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+    }
+    body[data-theme="light"] .theme-btn {
+      border: 2px solid var(--highlight);
+    }
+    body[data-theme="dark"] .theme-btn {
+      border: 2px solid #8ab4f8;
+    }
+
+    .toggle-text { color: var(--text-secondary); }
+    body[data-theme="light"] .toggle-text:hover { color: var(--highlight); }
+    body[data-theme="dark"] .toggle-text:hover { color: #ffffff; }
+
+    .toggle-bg { background: var(--main-bg); border-color: var(--border-color); }
+    .toggle-card { background: var(--card-bg); border-color: var(--border-color); color: var(--text-primary); }
+    .toggle-input { background: var(--sidebar-bg); border-color: var(--border-color); color: var(--text-primary); }
+
+    .tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 10px;
+      background: transparent;
+      border: 1px solid var(--highlight);
+      border-radius: 12px;
+      font-size: 11px;
+      color: var(--highlight);
+    }
+
+    body[data-theme="dark"] .tag-chip {
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .lang-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .lang-chip[data-lang="zh"] { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%); color: white; }
+    .lang-chip[data-lang="en"] { background: linear-gradient(135deg, #4ecdc4 0%, #3dbdb5 100%); color: white; }
+    .lang-chip[data-lang="mix"] { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white; }
+    body[data-theme="dark"] .lang-chip[data-lang="zh"] { background: linear-gradient(135deg, #c0392b 0%, #a93226 100%); }
+    body[data-theme="dark"] .lang-chip[data-lang="en"] { background: linear-gradient(135deg, #16a085 0%, #138d75 100%); }
+    body[data-theme="dark"] .lang-chip[data-lang="mix"] { background: linear-gradient(135deg, #8e44ad 0%, #7d3c98 100%); }
+
+    .type-toggle {
+      display: flex;
+      gap: 8px;
+    }
+    .type-btn {
+      flex: 1;
+      padding: 8px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+    .type-btn.active {
+      background: var(--highlight);
+      color: white;
+      border-color: var(--highlight);
+    }
+    .type-btn:hover:not(.active) {
+      background: var(--tertiary);
+    }
+    body[data-theme="dark"] .type-btn.active {
+      background: #8ab4f8;
+      color: #000;
+      border-color: #8ab4f8;
+    }
+
+    .rich-toolbar {
+      background: var(--surface, #f5f5f5);
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      padding: 6px;
+    }
+    body[data-theme="dark"] .rich-toolbar {
+      background: #292a2d;
+    }
+
+    .toolbar-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .toolbar-btn:hover {
+      background: var(--highlight);
+      color: white;
+      border-color: var(--highlight);
+    }
+    body[data-theme="dark"] .toolbar-btn {
+      background: #3c4043;
+      color: #e8eaed;
+      border-color: #5f6368;
+    }
+    body[data-theme="dark"] .toolbar-btn:hover {
+      background: #8ab4f8;
+      color: #000;
+      border-color: #8ab4f8;
+    }
+
+    .color-picker {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 0;
+      overflow: hidden;
+    }
+    .color-picker::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    .color-picker::-webkit-color-swatch {
+      border: none;
+    }
+
+    .rich-editor {
+      min-height: 100px;
+      max-height: 200px;
+      border-radius: 0 0 8px 8px;
+      outline: none;
+      overflow-y: auto;
+    }
+    .rich-editor:empty:before {
+      content: attr(placeholder);
+      color: #9aa0a6;
+      pointer-events: none;
+    }
+    .rich-editor:focus {
+      border-color: var(--highlight);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--highlight) 0%, var(--stroke) 100%);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    body[data-theme="dark"] .btn-primary {
+      background: linear-gradient(135deg, #8ab4f8 0%, #aecbfa 100%);
+      color: #000000;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background: var(--tertiary);
+    }
+
+    body[data-theme="dark"] .btn-secondary {
+      border-color: rgba(138, 180, 248, 0.4);
+      color: #8ab4f8;
+    }
+    body[data-theme="dark"] .btn-secondary:hover {
+      background: rgba(138, 180, 248, 0.1);
+    }
+
+    .btn-laser {
+      background: transparent;
+      border: 1.5px solid var(--highlight, #ff8ba7);
+      color: var(--highlight, #ff8ba7);
+      box-shadow: 0 0 8px rgba(255, 139, 167, 0.2);
+    }
+    .btn-laser:hover {
+      background: rgba(255, 139, 167, 0.08);
+      box-shadow: 0 0 12px rgba(255, 139, 167, 0.3);
+    }
+
+    body[data-theme="dark"] .btn-laser {
+      border-color: #8ab4f8;
+      color: #8ab4f8;
+      box-shadow: 0 0 8px rgba(138, 180, 248, 0.2);
+    }
+    body[data-theme="dark"] .btn-laser:hover {
+      background: rgba(138, 180, 248, 0.1);
+      box-shadow: 0 0 12px rgba(138, 180, 248, 0.3);
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: 1.5px solid #ea4335;
+      color: #ea4335;
+      box-shadow: 0 0 8px rgba(234, 67, 53, 0.2);
+    }
+    .btn-danger:hover {
+      background: rgba(234, 67, 53, 0.08);
+      box-shadow: 0 0 12px rgba(234, 67, 53, 0.3);
+    }
+
+    body[data-theme="dark"] .btn-danger {
+      border-color: #f28b82;
+      color: #f28b82;
+      box-shadow: 0 0 8px rgba(242, 139, 130, 0.2);
+    }
+    body[data-theme="dark"] .btn-danger:hover {
+      background: rgba(242, 139, 130, 0.1);
+      box-shadow: 0 0 12px rgba(242, 139, 130, 0.3);
+    }
+
+    .modal-input {
+      background: #ffffff;
+      border: 1px solid #cccccc;
+      color: #333333;
+      padding: 10px 12px;
+      border-radius: 8px;
+      width: 100%;
+      font-size: 0.95rem;
+    }
+    body[data-theme="dark"] .modal-input {
+      background: #292a2d;
+      border: 1px solid #555555;
+      color: #e8eaed;
+    }
+    body[data-theme="dark"] .modal-input::placeholder {
+      color: #9aa0a6;
+    }
+    body[data-theme="dark"] .modal-input:focus {
+      border-color: #8ab4f8;
+      outline: none;
+    }
+
+    .modal-textarea {
+      background: #ffffff;
+      border: 1px solid #cccccc;
+      color: #333333;
+      padding: 10px 12px;
+      border-radius: 8px;
+      width: 100%;
+      font-size: 0.95rem;
+      min-height: 80px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    body[data-theme="dark"] .modal-textarea {
+      background: #292a2d;
+      border: 1px solid #555555;
+      color: #e8eaed;
+    }
+    body[data-theme="dark"] .modal-textarea:focus {
+      border-color: #8ab4f8;
+      outline: none;
+    }
+
+    .quote-text {
+      font-size: 1.15rem !important;
+      font-style: italic;
+      line-height: 1.8;
+      color: var(--text-primary);
+      max-height: calc(1.15rem * 1.8 * 6);
+      overflow-y: auto;
+    }
+    .quote-text::before {
+      content: '"';
+      color: var(--highlight);
+      font-size: 1.5rem;
+    }
+    .quote-text::after {
+      content: '"';
+      color: var(--highlight);
+      font-size: 1.5rem;
+    }
+
+    .quote-source {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .quote-thought {
+      font-size: 1.15rem !important;
+      color: var(--text-primary);
+      padding: 10px 14px;
+      background: var(--tertiary);
+      border-radius: 8px;
+      border-left: 3px solid var(--highlight);
+      opacity: 0.85;
+    }
+
+    .quote-category {
+      font-size: 0.8rem !important;
+    }
+
+    .view-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .view-btn.active {
+      background: var(--highlight);
+      color: white;
+    }
+    body[data-theme="dark"] .view-btn.active {
+      background: #8ab4f8;
+      color: #000000;
+    }
+    .view-btn:hover:not(.active) {
+      background: var(--tertiary);
+    }
+    body[data-theme="dark"] .view-btn:hover:not(.active) {
+      background: rgba(138, 180, 248, 0.1);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .color-scheme-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #140507d9;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .color-scheme-btn:hover { transform: scale(1.1); }
+    .color-scheme-btn.active { border-color: var(--stroke); transform: scale(1.1); box-shadow: 0 0 10px var(--highlight); }
+
+    body[data-theme="dark"] #colorSchemeList {
+      display: none;
+    }
+
+    body[data-theme="dark"] #authorSidebar {
+      background: radial-gradient(ellipse at top left, rgba(255,255,255,0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at bottom right, rgba(255,255,255,0.05) 0%, transparent 50%),
+                  linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%) !important;
+    }
+
+    body[data-theme="dark"] main {
+      background: radial-gradient(ellipse at top left, rgba(255,255,255,0.08) 0%, transparent 50%),
+                  radial-gradient(ellipse at bottom right, rgba(255,255,255,0.05) 0%, transparent 50%),
+                  linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    }
+  </style>
+</head>
+<body data-theme="light" class="h-screen overflow-hidden">
+  <div id="app" class="flex h-full p-4 gap-4">
+    <!-- 侧边栏 -->
+    <div id="authorSidebar" class="w-0 overflow-hidden transition-all duration-300 rounded-2xl border-2"
+         style="background: var(--card-bg); border-color: var(--border-color);">
+      <div class="p-3 min-w-[250px] h-full flex flex-col">
+        <!-- 库切换标签 -->
+        <div id="libraryTabs" class="flex flex-wrap gap-1 mb-3">
+        </div>
+        <!-- 来源列表 -->
+        <div id="sourceList" class="flex-1 overflow-y-auto space-y-1">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col rounded-2xl border-2 overflow-hidden"
+          style="background: var(--card-bg); border-color: var(--border-color);">
+      <!-- Header -->
+      <header class="p-4 border-b-2 flex justify-between items-center flex-wrap gap-3"
+              style="border-color: var(--border-color);">
+        <h1 class="page-title">自愈集</h1>
+        <div class="flex gap-2 flex-wrap items-center">
+          <div id="colorSchemeList" class="flex gap-1"></div>
+          <button onclick="exportData()" class="btn-secondary text-sm px-3 py-1">导出</button>
+          <button onclick="importData()" class="btn-secondary text-sm px-3 py-1">导入</button>
+          <button onclick="toggleTheme()" class="theme-btn">🌙</button>
+          <button onclick="openModal()" class="btn-primary">+ 添加</button>
+        </div>
+      </header>
+
+      <!-- Toolbar -->
+      <div class="toolbar p-3 border-b-2 flex gap-3 flex-wrap items-center"
+           style="border-color: var(--border-color);">
+        <input type="text" id="searchInput" placeholder="搜索..." 
+               class="modal-input flex-1 min-w-[150px]">
+        <select id="categoryFilter" class="modal-input w-auto">
+          <option value="">所有类型</option>
+          <option value="口述">口述</option>
+          <option value="诗歌">诗歌</option>
+          <option value="电影">电影</option>
+          <option value="书籍">书籍</option>
+          <option value="音乐剧">音乐剧</option>
+          <option value="歌曲">歌曲</option>
+          <option value="播客">播客</option>
+          <option value="其他">其他</option>
+        </select>
+        <select id="tagFilter" class="modal-input w-auto">
+          <option value="">所有标签</option>
+        </select>
+        <select id="langFilter" class="modal-input w-auto">
+          <option value="">全部语言</option>
+          <option value="zh">中文</option>
+          <option value="en">英文</option>
+          <option value="mix">混合</option>
+        </select>
+        <select id="sortSelect" class="modal-input w-auto">
+          <option value="newest">最新在前</option>
+          <option value="oldest">最早在前</option>
+        </select>
+        <div class="flex gap-1 border rounded-lg overflow-hidden" style="border-color: var(--border-color);">
+          <button class="view-btn active" data-view="card">卡片</button>
+          <button class="view-btn" data-view="list">列表</button>
+          <button class="view-btn" data-view="timeline">时间线</button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div id="content" class="flex-1 overflow-y-auto p-4">
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="modalOverlay" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl w-full max-w-[90vw] mx-4" 
+         style="background: var(--card-bg); max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="p-6 pb-3">
+        <h2 id="modalTitle" class="page-title">添加名言</h2>
+      </div>
+      <form id="quoteForm" class="flex-1 overflow-y-auto px-6 pb-3">
+        <div class="mb-3">
+          <label class="block text-sm mb-1" style="color: var(--text-secondary);">名言内容 *</label>
+          <div class="rich-toolbar mb-1 flex gap-1 items-center flex-wrap">
+            <button type="button" onclick="execCmd('bold')" class="toolbar-btn" title="粗体"><b>B</b></button>
+            <button type="button" onclick="execCmd('italic')" class="toolbar-btn" title="斜体"><i>I</i></button>
+            <button type="button" onclick="execCmd('underline')" class="toolbar-btn" title="下划线"><u>U</u></button>
+            <button type="button" onclick="execCmd('backColor', '#ffeb3b')" class="toolbar-btn" title="高亮">🖍️</button>
+            <input type="color" id="textColorPicker" class="color-picker" title="文字颜色" value="#000000" onchange="execCmd('foreColor', this.value)">
+            <select id="fontSizeSelect" class="modal-input w-auto" onchange="execCmd('fontSize', this.value)" style="padding: 4px 8px; font-size: 12px;">
+              <option value="">字号</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+            </select>
+          </div>
+          <div id="quoteText" class="rich-editor modal-textarea" contenteditable="true" required placeholder="那句让你印象深刻的话..."></div>
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm mb-1" style="color: var(--text-secondary);">出处类型</label>
+          <select id="quoteCategory" class="modal-input" onchange="toggleAuthorField()">
+            <option value="">请选择</option>
+            <option value="口述">口述</option>
+            <option value="诗歌">诗歌</option>
+            <option value="电影">电影</option>
+            <option value="书籍">书籍</option>
+            <option value="音乐剧">音乐剧</option>
+            <option value="歌曲">歌曲</option>
+            <option value="播客">播客</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label id="sourceLabel" class="block text-sm mb-1" style="color: var(--text-secondary);">出处/谁说的</label>
+          <div class="flex gap-2">
+            <input type="text" id="quoteSource" class="modal-input flex-1" placeholder="出处/谁说的：...">
+            <div id="authorField" class="flex-1" style="display: none;">
+              <input type="text" id="quoteAuthor" class="modal-input w-full" placeholder="作者/创作者：...">
+            </div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm mb-1" style="color: var(--text-secondary);">你的感悟</label>
+          <div class="rich-toolbar mb-1 flex gap-1 items-center flex-wrap">
+            <button type="button" onclick="execCmd('bold', '', 'quoteThought')" class="toolbar-btn" title="粗体"><b>B</b></button>
+            <button type="button" onclick="execCmd('italic', '', 'quoteThought')" class="toolbar-btn" title="斜体"><i>I</i></button>
+            <button type="button" onclick="execCmd('underline', '', 'quoteThought')" class="toolbar-btn" title="下划线"><u>U</u></button>
+            <button type="button" onclick="execCmd('backColor', '#ffeb3b', 'quoteThought')" class="toolbar-btn" title="高亮">🖍️</button>
+            <input type="color" id="thoughtColorPicker" class="color-picker" title="文字颜色" value="#000000" onchange="execCmd('foreColor', this.value, 'quoteThought')">
+            <select id="thoughtFontSizeSelect" class="modal-input w-auto" onchange="execCmd('fontSize', this.value, 'quoteThought')" style="padding: 4px 8px; font-size: 12px;">
+              <option value="">字号</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+            </select>
+          </div>
+          <div id="quoteThought" class="rich-editor modal-textarea" contenteditable="true" placeholder="这句话为什么让你印象深刻？"></div>
+        </div>
+        <div class="mb-3">
+          <label class="block text-sm mb-1" style="color: var(--text-secondary);">语言</label>
+          <div class="flex gap-3">
+            <label class="flex items-center gap-1 cursor-pointer">
+              <input type="checkbox" name="lang" value="zh" class="lang-checkbox"> 中文
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer">
+              <input type="checkbox" name="lang" value="en" class="lang-checkbox"> 英文
+            </label>
+            <label class="flex items-center gap-1 cursor-pointer">
+              <input type="checkbox" name="lang" value="mix" class="lang-checkbox"> 混合
+            </label>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm mb-1" style="color: var(--text-secondary);">标签（用逗号分隔）</label>
+          <input type="text" id="quoteTags" class="modal-input" placeholder="比如：人生、爱情、成长">
+        </div>
+      </form>
+      <div class="p-6 pt-3 flex gap-2 justify-end border-t" style="border-color: var(--border-color);">
+        <button type="button" onclick="closeModal()" class="btn-secondary">取消</button>
+        <button type="button" onclick="document.getElementById('quoteForm').requestSubmit()" class="btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 完整内容弹窗 -->
+  <div id="fullViewOverlay" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl w-full max-w-2xl mx-4 p-6" 
+         style="background: var(--card-bg); max-height: 85vh; overflow-y: auto;">
+      <h2 class="page-title mb-4">完整内容</h2>
+      <div id="fullViewContent"></div>
+      <div class="flex justify-end mt-4">
+        <button onclick="closeFullViewModal()" class="btn-secondary">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="importFile" accept=".json" style="display: none;">
+
+  <!-- 提取词句弹窗 -->
+  <div id="extractOverlay" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4" 
+         style="background: var(--card-bg);">
+      <h2 class="page-title mb-4">提取词句</h2>
+      <div class="mb-3">
+        <label class="block text-sm mb-1" style="color: var(--text-secondary);">原文</label>
+        <div id="extractQuoteText" class="p-2 rounded text-sm" style="background: var(--tertiary); max-height: 150px; overflow-y: auto;"></div>
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm mb-1" style="color: var(--text-secondary);">类型</label>
+        <select id="extractType" class="modal-input">
+          <option value="word">词语/短语</option>
+          <option value="sentence">句子</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm mb-1" style="color: var(--text-secondary);">内容 *</label>
+        <input type="text" id="extractWord" class="modal-input" placeholder="从名言中提取的词句">
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm mb-1" style="color: var(--text-secondary);">释义/感悟</label>
+        <textarea id="extractMeaning" class="modal-textarea" placeholder="这个内容为什么吸引你？"></textarea>
+      </div>
+      <div class="flex gap-2 justify-end">
+        <button onclick="closeExtractModal()" class="btn-secondary">取消</button>
+        <button onclick="saveExtract()" class="btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 编辑提取词句弹窗 -->
+  <div id="editExtractOverlay" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4" 
+         style="background: var(--card-bg);">
+      <h2 class="page-title mb-4">编辑词句</h2>
+      <div class="mb-3">
+        <label class="block text-sm mb-1" style="color: var(--text-secondary);">原文</label>
+        <div id="editExtractQuoteText" class="p-2 rounded text-sm" style="background: var(--tertiary); max-height: 100px; overflow-y: auto;"></div>
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm mb-1" style="color: var(--text-secondary);">类型</label>
+        <select id="editExtractType" class="modal-input">
+          <option value="word">词语/短语</option>
+          <option value="sentence">句子</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm mb-1" style="color: var(--text-secondary);">内容 *</label>
+        <input type="text" id="editExtractWord" class="modal-input" placeholder="从名言中提取的词句">
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm mb-1" style="color: var(--text-secondary);">释义/感悟</label>
+        <textarea id="editExtractMeaning" class="modal-textarea" placeholder="这个内容为什么吸引你？"></textarea>
+      </div>
+      <div class="flex gap-2 justify-end">
+        <button onclick="closeEditExtractModal()" class="btn-secondary">取消</button>
+        <button onclick="saveEditExtract()" class="btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'famous_quotes';
+    let quotes = [];
+    let editingId = null;
+    let currentView = 'card';
+    let currentColorScheme = 0;
+    
+    const defaultColorSchemes = [
+      { name: 'Berry', bg: '#faeee7', sidebar: '#ffc6c7', stroke: '#33272a', highlight: '#ff8ba7', secondary: '#ffc6c7', tertiary: '#c3f0ca', textMain: '#33272a', textLight: '#594a4e', borderMain: '#140507d9', borderSub: '#dee2e8', main: '#fffffe', cardBg: '#ffffff' },
+      { name: 'Lemon', bg: '#fff9db', sidebar: '#e3f6f5', stroke: '#272343', highlight: '#ffd803', secondary: '#e3f6f5', tertiary: '#bae8e8', textMain: '#272343', textLight: '#4a4568', borderMain: '#140507d9', borderSub: '#dee2e8', main: '#fffffe', cardBg: '#ffffff' },
+      { name: 'Ocean', bg: '#e3f2fd', sidebar: '#a0c4de', stroke: '#094067', highlight: '#3da9fc', secondary: '#90b4ce', tertiary: '#ef4565', textMain: '#094067', textLight: '#4a6d8c', borderMain: '#140507d9', borderSub: '#dee2e8', main: '#fffffe', cardBg: '#ffffff' },
+      { name: 'Forest', bg: '#e8e4e6', sidebar: '#b8ddd3', stroke: '#001e1d', highlight: '#abd1c6', secondary: '#abd1c6', tertiary: '#e16162', textMain: '#001e1d', textLight: '#3d5c5a', borderMain: '#140507d9', borderSub: '#dee2e8', main: '#fffffe', cardBg: '#ffffff' },
+      { name: 'Lavender', bg: '#f3e5f5', sidebar: '#e1bee7', stroke: '#4a148c', highlight: '#ce93d8', secondary: '#e1bee7', tertiary: '#b39ddb', textMain: '#4a148c', textLight: '#7b1fa2', borderMain: '#4a148c', borderSub: '#e1bee7', main: '#ffffff', cardBg: '#ffffff' },
+      { name: 'Sunset', bg: '#fff3e0', sidebar: '#ffcc80', stroke: '#e65100', highlight: '#ff9800', secondary: '#ffcc80', tertiary: '#ffab91', textMain: '#e65100', textLight: '#f57c00', borderMain: '#e65100', borderSub: '#ffe0b2', main: '#ffffff', cardBg: '#ffffff' },
+      { name: 'Mint', bg: '#e0f2f1', sidebar: '#80cbc4', stroke: '#004d40', highlight: '#26a69a', secondary: '#80cbc4', tertiary: '#a5d6a7', textMain: '#004d40', textLight: '#00796b', borderMain: '#004d40', borderSub: '#b2dfdb', main: '#ffffff', cardBg: '#ffffff' },
+      { name: 'Cotton', bg: '#fafafa', sidebar: '#cfd8dc', stroke: '#263238', highlight: '#90a4ae', secondary: '#cfd8dc', tertiary: '#b0bec5', textMain: '#263238', textLight: '#455a64', borderMain: '#263238', borderSub: '#eceff1', main: '#ffffff', cardBg: '#ffffff' },
+      { name: 'Peach', bg: '#fbe9e7', sidebar: '#ffab91', stroke: '#bf360c', highlight: '#ff7043', secondary: '#ffab91', tertiary: '#ffccbc', textMain: '#bf360c', textLight: '#d84315', borderMain: '#bf360c', borderSub: '#ffccbc', main: '#ffffff', cardBg: '#ffffff' },
+      { name: 'Sky', bg: '#e3f2fd', sidebar: '#81d4fa', stroke: '#01579b', highlight: '#29b6f6', secondary: '#81d4fa', tertiary: '#b3e5fc', textMain: '#01579b', textLight: '#0288d1', borderMain: '#01579b', borderSub: '#b3e5fc', main: '#ffffff', cardBg: '#ffffff' },
+      { name: 'Rose', bg: '#fce4ec', sidebar: '#f48fb1', stroke: '#880e4f', highlight: '#ec407a', secondary: '#f48fb1', tertiary: '#f8bbd0', textMain: '#880e4f', textLight: '#c2185b', borderMain: '#880e4f', borderSub: '#fce4ec', main: '#ffffff', cardBg: '#ffffff' },
+      { name: 'Matcha', bg: '#f1f8e9', sidebar: '#c5e1a5', stroke: '#33691e', highlight: '#8bc34a', secondary: '#c5e1a5', tertiary: '#dcedc8', textMain: '#33691e', textLight: '#558b2f', borderMain: '#33691e', borderSub: '#f1f8e9', main: '#ffffff', cardBg: '#ffffff' }
+    ];
+
+    let colorSchemes = defaultColorSchemes;
+
+    (function loadCustomColorSchemes() {
+      try {
+        const saved = localStorage.getItem('customColorSchemes');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            colorSchemes = parsed;
+          }
+        }
+      } catch (e) {
+        console.error('Failed to load custom color schemes:', e);
+      }
+    })();
+
+    function openFullViewModal(quoteId) {
+      const quote = quotes.find(q => q.id === quoteId);
+      if (!quote) return;
+      
+      const langLabels = quote.languages ? quote.languages.map(l => `<span class="lang-chip" data-lang="${l}">${getLangLabel(l)}</span>`).join('') : '';
+      const extractedHtml = quote.extractedWords && quote.extractedWords.length > 0 
+        ? `<div class="extracted-section mt-4 pt-3" style="border-top: 1px dashed var(--border-color);">
+            <div class="text-xs font-bold mb-2" style="color: var(--text-secondary);">✨ 提取的词句</div>
+            <div class="space-y-2">${quote.extractedWords.map((w, wi) => `
+              <div class="extracted-word p-2 rounded" style="background: var(--tertiary);">
+                <div class="font-bold">${escapeHtml(w.word)} ${w.meaning ? '<span class="text-xs" style="color: var(--text-secondary);">- ' + escapeHtml(w.meaning) + '</span>' : ''}</div>
+              </div>
+            `).join('')}</div>
+          </div>` : '';
+      
+      document.getElementById('fullViewContent').innerHTML = `
+        ${langLabels ? `<div class="flex gap-1 mb-3">${langLabels}</div>` : ''}
+        <div class="quote-text expanded mb-3">${quote.text}</div>
+        ${quote.category ? `<div class="quote-category mb-3 text-sm" style="color: var(--highlight);">📁 ${escapeHtml(quote.category)}</div>` : ''}
+        ${quote.source ? `<div class="quote-source mb-3">—— ${escapeHtml(quote.source)}${quote.author ? ' / ' + escapeHtml(quote.author) : ''}</div>` : ''}
+        ${quote.thought ? `<div class="quote-thought mb-3"><div style="display:contents;">${quote.thought.replace(/\n/g, '<br>')}</div></div>` : ''}
+        ${quote.tags && quote.tags.length ? `<div class="flex gap-1 flex-wrap mb-3">${quote.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+        ${extractedHtml}
+        <div class="text-xs mt-4" style="color: var(--text-secondary);">添加于 ${new Date(quote.date).toLocaleDateString('zh-CN')}</div>
+      `;
+      document.getElementById('fullViewOverlay').classList.remove('hidden');
+    }
+
+    function closeFullViewModal() {
+      document.getElementById('fullViewOverlay').classList.add('hidden');
+    }
+
+    function init() {
+      loadQuotes();
+      renderTags();
+      renderQuotes();
+      renderLibraryTabs();
+      renderSources();
+      bindEvents();
+      loadTheme();
+      loadColorScheme();
+      bindSidebarEvents();
+    }
+
+    let currentLibrary = '人物';
+    let currentSourceFilter = '';
+
+    const LIBRARIES = ['人物', '电影', '书籍', '诗歌', '歌曲', '音乐剧', '播客', '其他'];
+
+    function renderLibraryTabs() {
+      const tabsContainer = document.getElementById('libraryTabs');
+      tabsContainer.innerHTML = LIBRARIES.map(lib => `
+        <div class="library-tab ${currentLibrary === lib ? 'active' : ''}" onclick="switchLibrary('${lib}')">
+          ${lib}
+        </div>
+      `).join('');
+    }
+
+    function renderSources() {
+      const sourceSet = new Set();
+      
+      quotes.forEach(q => {
+        const category = q.category || '';
+        
+        let shouldInclude = false;
+        
+        if (currentLibrary === '人物') {
+          if (q.source && q.source.trim() && !q.source.trim().startsWith('《') && !q.source.trim().endsWith('》')) {
+            shouldInclude = true;
+          }
+        } else if (currentLibrary === '电影' || currentLibrary === '书籍') {
+          if (category === currentLibrary && q.source && q.source.trim()) {
+            shouldInclude = true;
+          }
+        } else {
+          if (category === currentLibrary) {
+            shouldInclude = true;
+          }
+        }
+        
+        if (shouldInclude) {
+          sourceSet.add(q.source.trim());
+        }
+      });
+      
+      const sortedSources = Array.from(sourceSet).sort((a, b) => a.localeCompare(b, 'zh-CN'));
+      
+      const sourceList = document.getElementById('sourceList');
+      sourceList.innerHTML = `
+        <div class="source-item ${currentSourceFilter === '' ? 'active' : ''}" onclick="filterBySource('')">
+          全部
+        </div>
+        ${sortedSources.map(source => `
+          <div class="source-item ${currentSourceFilter === source ? 'active' : ''}" onclick="filterBySource('${escapeHtml(source)}')">
+            ${escapeHtml(source)}
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function switchLibrary(library) {
+      currentLibrary = library;
+      currentSourceFilter = '';
+      renderLibraryTabs();
+      renderSources();
+      renderQuotes();
+      
+      const sidebar = document.getElementById('authorSidebar');
+      sidebar.classList.add('expanded');
+    }
+
+    function filterBySource(source) {
+      currentSourceFilter = source;
+      renderSources();
+      renderQuotes();
+      
+      const sidebar = document.getElementById('authorSidebar');
+      if (source) {
+        sidebar.classList.add('expanded');
+      }
+    }
+
+    function bindSidebarEvents() {
+      const sidebar = document.getElementById('authorSidebar');
+      sidebar.addEventListener('mouseenter', function() {
+        this.classList.add('expanded');
+      });
+      sidebar.addEventListener('mouseleave', function() {
+        if (!currentSourceFilter) {
+          this.classList.remove('expanded');
+        }
+      });
+    }
+
+    function loadQuotes() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      quotes = data ? JSON.parse(data) : [];
+      quotes = quotes.map(q => {
+        // 迁移旧分类名称
+        if (q.category === '人口述') q.category = '口述';
+        if (q.category === '音乐剧/歌曲') q.category = '音乐剧';
+        
+        if (!q.languages) {
+          q.languages = detectLanguage(q.text);
+        }
+        if (!q.category) {
+          q.category = '';
+        }
+        if (!q.extractedWords) {
+          q.extractedWords = [];
+        }
+        if (!q.author) {
+          q.author = '';
+        }
+        return q;
+      });
+      saveQuotes();
+    }
+
+    function detectLanguage(text) {
+      const zhRegex = /[\u4e00-\u9fa5]/;
+      const enRegex = /[a-zA-Z]/;
+      const zhMatch = text.match(zhRegex);
+      const enMatch = text.match(enRegex);
+      
+      if (zhMatch && enMatch) return ['mix'];
+      if (zhMatch) return ['zh'];
+      if (enMatch) return ['en'];
+      return ['zh'];
+    }
+
+    function saveQuotes() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(quotes));
+    }
+
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.body.setAttribute('data-theme', savedTheme);
+    }
+
+    function loadColorScheme() {
+      currentColorScheme = parseInt(localStorage.getItem('color-scheme') || '0');
+      applyColorScheme(currentColorScheme);
+      renderColorSchemeSelector();
+    }
+
+    function renderColorSchemeSelector() {
+      const list = document.getElementById('colorSchemeList');
+      if (!list) return;
+      list.innerHTML = colorSchemes.map((scheme, i) => 
+        `<div onclick="selectColorScheme(${i})" oncontextmenu="showColorSchemeMenu(event, ${i})" class="color-scheme-btn ${i === currentColorScheme ? 'active' : ''}" 
+             style="background: ${scheme.highlight};" title="${scheme.name}"></div>`
+      ).join('');
+    }
+
+    function showColorSchemeMenu(e, index) {
+      e.preventDefault();
+      const existing = document.getElementById('colorSchemeMenu');
+      if (existing) existing.remove();
+      
+      const menu = document.createElement('div');
+      menu.id = 'colorSchemeMenu';
+      menu.className = 'fixed bg-white border rounded-lg shadow-lg z-50 py-1';
+      menu.style.left = e.pageX + 'px';
+      menu.style.top = e.pageY + 'px';
+      menu.innerHTML = `
+        <button onclick="editColorScheme(${index}); document.getElementById('colorSchemeMenu').remove();" class="w-full px-4 py-2 text-left hover:bg-gray-100 text-sm">编辑</button>
+        <button onclick="deleteColorScheme(${index}); document.getElementById('colorSchemeMenu').remove();" class="w-full px-4 py-2 text-left hover:bg-gray-100 text-sm text-red-500">删除</button>
+      `;
+      document.body.appendChild(menu);
+      
+      document.addEventListener('click', function hideMenu() {
+        menu.remove();
+        document.removeEventListener('click', hideMenu);
+      });
+    }
+
+    function editColorScheme(index) {
+      const scheme = colorSchemes[index];
+      const name = prompt('颜色名称:', scheme.name);
+      if (name === null) return;
+      
+      const highlight = prompt('主色调 (hex):', scheme.highlight);
+      if (highlight === null) return;
+      
+      const stroke = prompt('边框色 (hex):', scheme.stroke);
+      if (stroke === null) return;
+      
+      const secondary = prompt('次色调 (hex):', scheme.secondary);
+      if (secondary === null) return;
+      
+      const tertiary = prompt('第三色调 (hex):', scheme.tertiary);
+      if (tertiary === null) return;
+      
+      colorSchemes[index] = {
+        ...scheme,
+        name: name || scheme.name,
+        highlight: highlight || scheme.highlight,
+        stroke: stroke || scheme.stroke,
+        secondary: secondary || scheme.secondary,
+        tertiary: tertiary || scheme.tertiary,
+        bg: scheme.bg,
+        sidebar: scheme.sidebar,
+        textMain: stroke || scheme.stroke,
+        textLight: stroke || scheme.stroke,
+        borderMain: stroke || scheme.stroke,
+        borderSub: stroke || scheme.stroke,
+        main: scheme.main,
+        cardBg: scheme.cardBg
+      };
+      
+      localStorage.setItem('customColorSchemes', JSON.stringify(colorSchemes));
+      applyColorScheme(index);
+      renderColorSchemeSelector();
+    }
+
+    function deleteColorScheme(index) {
+      if (colorSchemes.length <= 1) {
+        alert('至少保留一个颜色方案');
+        return;
+      }
+      if (confirm(`确定要删除颜色方案 "${colorSchemes[index].name}" 吗?`)) {
+        colorSchemes.splice(index, 1);
+        if (currentColorScheme >= colorSchemes.length) {
+          currentColorScheme = 0;
+        }
+        localStorage.setItem('customColorSchemes', JSON.stringify(colorSchemes));
+        localStorage.setItem('color-scheme', currentColorScheme);
+        applyColorScheme(currentColorScheme);
+        renderColorSchemeSelector();
+      }
+    }
+
+    function selectColorScheme(index) {
+      currentColorScheme = index;
+      localStorage.setItem('color-scheme', index);
+      applyColorScheme(index);
+      renderColorSchemeSelector();
+    }
+
+    function applyColorScheme(index) {
+      const scheme = colorSchemes[index];
+      const app = document.getElementById('app');
+      if (app) {
+        app.style.setProperty('--stroke', scheme.stroke);
+        app.style.setProperty('--main', scheme.main);
+        app.style.setProperty('--bg-page', scheme.bg);
+        app.style.setProperty('--sidebar-bg', scheme.sidebar);
+        app.style.setProperty('--highlight', scheme.highlight);
+        app.style.setProperty('--secondary', scheme.secondary);
+        app.style.setProperty('--tertiary', scheme.tertiary);
+        app.style.setProperty('--text-main', scheme.textMain);
+        app.style.setProperty('--text-light', scheme.textLight);
+        app.style.setProperty('--border-main', scheme.borderMain);
+        app.style.setProperty('--border-sub', scheme.borderSub);
+        app.style.setProperty('--border-color', scheme.borderMain);
+        app.style.setProperty('--text-primary', scheme.textMain);
+        app.style.setProperty('--text-secondary', scheme.textLight);
+        app.style.setProperty('--card-bg', scheme.cardBg);
+      }
+    }
+
+    function bindEvents() {
+      document.getElementById('quoteForm').addEventListener('submit', handleSubmit);
+      document.getElementById('searchInput').addEventListener('input', renderQuotes);
+      document.getElementById('categoryFilter').addEventListener('change', renderQuotes);
+      document.getElementById('tagFilter').addEventListener('change', renderQuotes);
+      document.getElementById('langFilter').addEventListener('change', renderQuotes);
+      document.getElementById('sortSelect').addEventListener('change', renderQuotes);
+      document.getElementById('importFile').addEventListener('change', importData);
+      
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentView = btn.dataset.view;
+          renderQuotes();
+        });
+      });
+
+      document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeModal();
+      });
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      if (newTheme === 'light') {
+        applyColorScheme(currentColorScheme);
+      }
+    }
+
+    function openModal(quote = null) {
+      editingId = quote ? quote.id : null;
+      
+      document.getElementById('modalTitle').textContent = quote ? '编辑名言' : '添加名言';
+      
+      document.getElementById('quoteText').innerHTML = quote ? quote.text : '';
+      document.getElementById('quoteCategory').value = quote ? (quote.category || '') : '';
+      document.getElementById('quoteSource').value = quote ? (quote.source || '') : '';
+      document.getElementById('quoteAuthor').value = quote ? (quote.author || '') : '';
+      document.getElementById('quoteThought').innerHTML = quote ? (quote.thought || '') : '';
+      toggleAuthorField();
+      
+      document.querySelectorAll('.lang-checkbox').forEach(cb => cb.checked = false);
+      if (quote && quote.languages) {
+        quote.languages.forEach(lang => {
+          const cb = document.querySelector(`.lang-checkbox[value="${lang}"]`);
+          if (cb) cb.checked = true;
+        });
+      }
+      
+      document.getElementById('quoteTags').value = quote ? (quote.tags ? quote.tags.join(', ') : '') : '';
+      document.getElementById('modalOverlay').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.add('hidden');
+      document.getElementById('quoteForm').reset();
+      document.getElementById('quoteText').innerHTML = '';
+      document.getElementById('quoteThought').innerHTML = '';
+      document.getElementById('quoteAuthor').value = '';
+      toggleAuthorField();
+      editingId = null;
+    }
+
+    let currentExtractQuoteId = null;
+
+    function openExtractModal(quoteId) {
+      currentExtractQuoteId = quoteId;
+      const quote = quotes.find(q => q.id === quoteId);
+      document.getElementById('extractQuoteText').innerHTML = quote ? quote.text : '';
+      document.getElementById('extractWord').value = '';
+      document.getElementById('extractMeaning').value = '';
+      document.getElementById('extractOverlay').classList.remove('hidden');
+    }
+
+    function closeExtractModal() {
+      document.getElementById('extractOverlay').classList.add('hidden');
+      currentExtractQuoteId = null;
+    }
+
+    function saveExtract() {
+      const word = document.getElementById('extractWord').value.trim();
+      const meaning = document.getElementById('extractMeaning').value.trim();
+      const type = document.getElementById('extractType').value;
+      
+      if (!word) {
+        alert('请输入内容');
+        return;
+      }
+      
+      const quote = quotes.find(q => q.id === currentExtractQuoteId);
+      if (quote) {
+        if (!quote.extractedWords) {
+          quote.extractedWords = [];
+        }
+        quote.extractedWords.push({ word, meaning, type, date: new Date().toISOString() });
+        saveQuotes();
+        renderQuotes();
+      }
+      
+      closeExtractModal();
+    }
+
+    function deleteExtractWord(quoteId, wordIndex) {
+      const quote = quotes.find(q => q.id === quoteId);
+      if (quote && quote.extractedWords) {
+        quote.extractedWords.splice(wordIndex, 1);
+        saveQuotes();
+        renderQuotes();
+      }
+    }
+
+    let currentEditExtractQuoteId = null;
+    let currentEditExtractWordIndex = null;
+
+    function openEditExtractModal(quoteId, wordIndex) {
+      currentEditExtractQuoteId = quoteId;
+      currentEditExtractWordIndex = wordIndex;
+      const quote = quotes.find(q => q.id === quoteId);
+      if (!quote || !quote.extractedWords || !quote.extractedWords[wordIndex]) return;
+      
+      const word = quote.extractedWords[wordIndex];
+      document.getElementById('editExtractQuoteText').innerHTML = quote.text;
+      document.getElementById('editExtractWord').value = word.word || '';
+      document.getElementById('editExtractMeaning').value = word.meaning || '';
+      document.getElementById('editExtractOverlay').classList.remove('hidden');
+    }
+
+    function closeEditExtractModal() {
+      document.getElementById('editExtractOverlay').classList.add('hidden');
+      currentEditExtractQuoteId = null;
+      currentEditExtractWordIndex = null;
+    }
+
+    function saveEditExtract() {
+      const word = document.getElementById('editExtractWord').value.trim();
+      const meaning = document.getElementById('editExtractMeaning').value.trim();
+      
+      if (!word) {
+        alert('请输入词语');
+        return;
+      }
+      
+      const quote = quotes.find(q => q.id === currentEditExtractQuoteId);
+      if (quote && quote.extractedWords && quote.extractedWords[currentEditExtractWordIndex] !== undefined) {
+        quote.extractedWords[currentEditExtractWordIndex] = { 
+          word, 
+          meaning, 
+          date: quote.extractedWords[currentEditExtractWordIndex].date 
+        };
+        saveQuotes();
+        renderQuotes();
+      }
+      
+      closeEditExtractModal();
+    }
+
+    function execCmd(command, value = null, editorId = null) {
+      if (editorId) {
+        const editor = document.getElementById(editorId);
+        editor.focus();
+      }
+      document.execCommand(command, false, value);
+    }
+
+    function toggleAuthorField() {
+      const category = document.getElementById('quoteCategory').value;
+      const authorField = document.getElementById('authorField');
+      const sourceLabel = document.getElementById('sourceLabel');
+      const sourceInput = document.getElementById('quoteSource');
+      
+      const needAuthor = ['诗歌', '电影', '书籍', '歌曲'].includes(category);
+      
+      if (needAuthor) {
+        authorField.style.display = 'block';
+        sourceLabel.style.display = 'none';
+        sourceInput.placeholder = '作品名称：《...》';
+      } else {
+        authorField.style.display = 'none';
+        sourceLabel.style.display = 'block';
+        sourceLabel.textContent = '出处/谁说的';
+        sourceInput.placeholder = '比如：张三、某本书、电影等';
+      }
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      
+      const text = document.getElementById('quoteText').innerHTML.trim();
+      const category = document.getElementById('quoteCategory').value;
+      const source = document.getElementById('quoteSource').value.trim();
+      const author = document.getElementById('quoteAuthor').value.trim();
+      const thought = document.getElementById('quoteThought').innerHTML.trim();
+      const tags = document.getElementById('quoteTags').value.split(/[,，]/).map(t => t.trim()).filter(t => t);
+      
+      const langCheckboxes = document.querySelectorAll('.lang-checkbox:checked');
+      const languages = Array.from(langCheckboxes).map(cb => cb.value);
+      
+      const existingQuote = editingId ? quotes.find(q => q.id === editingId) : null;
+      
+      const quote = {
+        id: editingId || Date.now(),
+        text,
+        category,
+        source,
+        author,
+        thought,
+        tags,
+        languages,
+        extractedWords: existingQuote ? (existingQuote.extractedWords || []) : [],
+        date: existingQuote ? existingQuote.date : new Date().toISOString()
+      };
+
+      if (editingId) {
+        const index = quotes.findIndex(q => q.id === editingId);
+        quotes[index] = quote;
+      } else {
+        quotes.unshift(quote);
+      }
+
+      saveQuotes();
+      renderTags();
+      renderSources();
+      renderQuotes();
+      closeModal();
+    }
+
+    function deleteQuote(id) {
+      if (confirm('确定要删除这条名言吗？')) {
+        quotes = quotes.filter(q => q.id !== id);
+        saveQuotes();
+        renderTags();
+        renderSources();
+        renderQuotes();
+      }
+    }
+
+    function editQuote(id) {
+      const quote = quotes.find(q => q.id === id);
+      openModal(quote);
+    }
+
+    function renderTags() {
+      const allTags = [...new Set(quotes.flatMap(q => q.tags))];
+      const filter = document.getElementById('tagFilter');
+      const current = filter.value;
+      filter.innerHTML = '<option value="">所有标签</option>' + 
+        allTags.map(t => `<option value="${t}">${t}</option>`).join('');
+      filter.value = current;
+    }
+
+    function renderQuotes() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const categoryFilter = document.getElementById('categoryFilter').value;
+      const tagFilter = document.getElementById('tagFilter').value;
+      const langFilter = document.getElementById('langFilter').value;
+      const sort = document.getElementById('sortSelect').value;
+
+      let filtered = quotes.filter(q => {
+        const matchSearch = !search || 
+          q.text.toLowerCase().includes(search) ||
+          (q.source && q.source.toLowerCase().includes(search)) ||
+          (q.author && q.author.toLowerCase().includes(search)) ||
+          (q.thought && q.thought.toLowerCase().includes(search)) ||
+          (q.tags && q.tags.some(t => t.toLowerCase().includes(search)));
+        const matchCategory = !categoryFilter || q.category === categoryFilter || !q.category;
+        const matchTag = !tagFilter || (q.tags && q.tags.includes(tagFilter));
+        const matchLang = !langFilter || (q.languages && q.languages.includes(langFilter));
+        
+        let matchSource = true;
+        if (currentSourceFilter) {
+          const category = q.category || '';
+          if (currentLibrary === '人物') {
+            matchSource = q.source && q.source.trim() === currentSourceFilter;
+          } else if (currentLibrary === '电影' || currentLibrary === '书籍') {
+            matchSource = category === currentLibrary && q.source && q.source.trim() === currentSourceFilter;
+          } else {
+            matchSource = category === currentLibrary;
+          }
+        } else if (currentLibrary !== '人物') {
+          matchSource = (q.category || '') === currentLibrary;
+        }
+        
+        return matchSearch && matchCategory && matchTag && matchLang && matchSource;
+      });
+
+      if (sort === 'oldest') {
+        filtered = [...filtered].reverse();
+      }
+
+      const content = document.getElementById('content');
+
+      if (filtered.length === 0) {
+        content.innerHTML = `
+          <div class="empty-state">
+            <p>还没有记录任何名言</p>
+            <button onclick="openModal()" class="btn-primary mt-3">+ 添加第一条</button>
+          </div>`;
+        return;
+      }
+
+      if (currentView === 'card') {
+        content.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">` + 
+          filtered.map(q => renderCard(q)).join('') + `</div>`;
+      } else if (currentView === 'list') {
+        content.innerHTML = `<div class="space-y-3">` + 
+          filtered.map(q => renderListItem(q)).join('') + `</div>`;
+      } else {
+        content.innerHTML = `<div class="relative pl-8 space-y-4" style="border-left: 2px solid var(--border-color);">` + 
+          filtered.map(q => renderTimelineItem(q)).join('') + `</div>`;
+      }
+    }
+
+    function getLangLabel(lang) {
+      const labels = { zh: '中文', en: '英文', mix: '混合' };
+      return labels[lang] || lang;
+    }
+
+    function renderCard(q) {
+      const langLabels = q.languages ? q.languages.map(l => `<span class="lang-chip" data-lang="${l}">${getLangLabel(l)}</span>`).join('') : '';
+      const extractedHtml = q.extractedWords && q.extractedWords.length > 0 
+        ? `<div class="extracted-section mt-3 pt-3" style="border-top: 1px dashed var(--border-color);">
+            <div class="text-xs font-bold mb-2" style="color: var(--text-secondary);">✨ 提取的词句</div>
+            <div class="space-y-2">${q.extractedWords.map((w, wi) => `
+              <div class="extracted-word p-2 rounded mb-2" style="background: var(--tertiary);">
+                <div class="font-bold">${escapeHtml(w.word)}</div>
+                ${w.meaning ? '<div class="text-xs" style="color: var(--text-secondary); white-space: pre-wrap;">' + escapeHtml(w.meaning).replace(/\n/g, '<br>') + '</div>' : ''}
+                <div class="flex gap-2 mt-1">
+                  <button onclick="openEditExtractModal(${q.id}, ${wi})" class="text-xs" style="color: var(--highlight);">编辑</button>
+                  <button onclick="deleteExtractWord(${q.id}, ${wi})" class="text-xs text-red-500">删除</button>
+                </div>
+              </div>
+            `).join('')}</div>
+          </div>` : '';
+      
+      const tempDiv = document.createElement('div');
+      tempDiv.style.width = '100%';
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.visibility = 'hidden';
+      tempDiv.style.whiteSpace = 'pre-wrap';
+      tempDiv.style.wordBreak = 'break-all';
+      tempDiv.style.fontSize = '1rem';
+      tempDiv.style.lineHeight = '1.8';
+      tempDiv.innerHTML = q.text;
+      document.body.appendChild(tempDiv);
+      const lineHeight = 1.8 * parseFloat(getComputedStyle(tempDiv).fontSize);
+      const lineCount = Math.ceil(tempDiv.scrollHeight / lineHeight);
+      document.body.removeChild(tempDiv);
+      const needsScroll = lineCount > 6;
+      
+      return `
+        <div class="content-card">
+          ${langLabels ? `<div class="flex gap-1 mb-2">${langLabels}</div>` : ''}
+          <div class="quote-text mb-2" style="${needsScroll ? 'max-height: calc(1rem * 1.8 * 6); overflow-y: auto;' : ''}">${q.text}</div>
+          ${q.author ? `<div class="quote-author mb-2" style="font-size: 0.9rem; color: var(--text-secondary);">${escapeHtml(q.author)}</div>` : ''}
+          ${q.category ? `<div class="quote-category mb-2" style="color: var(--highlight);">📁 ${escapeHtml(q.category)}</div>` : ''}
+          ${q.source ? `<div class="quote-source mb-2">—— ${escapeHtml(q.source)}</div>` : ''}
+          ${q.thought ? `<div class="quote-thought mb-2"><div style="display:contents;">${q.thought.replace(/\n/g, '<br>')}</div></div>` : ''}
+          ${q.tags && q.tags.length ? `<div class="flex gap-1 flex-wrap mb-2">${q.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+          ${extractedHtml}
+          <div class="flex justify-between items-center mt-3">
+            <span style="color: var(--text-secondary);">${new Date(q.date).toLocaleDateString('zh-CN')}</span>
+            <div class="flex gap-1">
+              <button onclick="openExtractModal(${q.id})" class="btn-secondary text-xs px-2 py-1">提取词句</button>
+              <button onclick="editQuote(${q.id})" class="btn-laser text-xs px-2 py-1">编辑</button>
+              <button onclick="deleteQuote(${q.id})" class="btn-danger text-xs px-2 py-1">删除</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderListItem(q) {
+      const langLabels = q.languages ? q.languages.map(l => `<span class="lang-chip" data-lang="${l}">${getLangLabel(l)}</span>`).join('') : '';
+      const extractedHtml = q.extractedWords && q.extractedWords.length > 0 
+        ? `<div class="mt-3 pt-3" style="border-top: 1px dashed var(--border-color);">
+            <div class="text-xs font-bold mb-2" style="color: var(--text-secondary);">✨ 提取的词句</div>
+            <div class="space-y-2">${q.extractedWords.map((w, wi) => `
+              <div class="p-2 rounded" style="background: var(--tertiary);">
+                <div class="font-bold">${escapeHtml(w.word)} ${w.meaning ? '<span class="text-xs" style="color: var(--text-secondary);">- ' + escapeHtml(w.meaning) + '</span>' : ''} <button onclick="deleteExtractWord(${q.id}, ${wi})" class="text-xs text-red-500 ml-1">×</button></div>
+              </div>
+            `).join('')}</div>
+          </div>` : '';
+      return `
+        <div class="content-card flex gap-4">
+          <div class="flex-1">
+            ${langLabels ? `<div class="flex gap-1 mb-2">${langLabels}</div>` : ''}
+            <div class="quote-text mb-1">${q.text}</div>
+            ${q.category ? `<div class="quote-category mb-2 text-sm" style="color: var(--highlight);">📁 ${escapeHtml(q.category)}</div>` : ''}
+            ${q.source ? `<div class="quote-source mb-2">—— ${escapeHtml(q.source)}${q.author ? ' / ' + escapeHtml(q.author) : ''}</div>` : ''}
+            ${q.thought ? `<div class="quote-thought mb-2"><div style="display:contents;">${q.thought.replace(/\n/g, '<br>')}</div></div>` : ''}
+            ${q.tags && q.tags.length ? `<div class="flex gap-1 flex-wrap mb-2">${q.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+            ${extractedHtml}
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-xs" style="color: var(--text-secondary);">${new Date(q.date).toLocaleDateString('zh-CN')}</span>
+              <div class="flex gap-1">
+                <button onclick="openExtractModal(${q.id})" class="btn-secondary text-xs px-2 py-1">提取词句</button>
+                <button onclick="editQuote(${q.id})" class="btn-laser text-xs px-2 py-1">编辑</button>
+                <button onclick="deleteQuote(${q.id})" class="btn-danger text-xs px-2 py-1">删除</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderTimelineItem(q) {
+      const langLabels = q.languages ? q.languages.map(l => `<span class="lang-chip" data-lang="${l}">${getLangLabel(l)}</span>`).join('') : '';
+      const extractedHtml = q.extractedWords && q.extractedWords.length > 0 
+        ? `<div class="mt-3 pt-3" style="border-top: 1px dashed var(--border-color);">
+            <div class="text-xs font-bold mb-2" style="color: var(--text-secondary);">✨ 提取的词句</div>
+            <div class="space-y-2">${q.extractedWords.map((w, wi) => `
+              <div class="p-2 rounded" style="background: var(--tertiary);">
+                <div class="font-bold">${escapeHtml(w.word)} ${w.meaning ? '<span class="text-xs" style="color: var(--text-secondary);">- ' + escapeHtml(w.meaning) + '</span>' : ''} <button onclick="deleteExtractWord(${q.id}, ${wi})" class="text-xs text-red-500 ml-1">×</button></div>
+              </div>
+            `).join('')}</div>
+          </div>` : '';
+      return `
+        <div class="relative">
+          <div class="absolute -left-[34px] top-4 w-4 h-4 rounded-full" style="background: linear-gradient(135deg, var(--highlight) 0%, var(--stroke) 100%); box-shadow: 0 0 8px var(--highlight);"></div>
+          <div class="content-card">
+            ${langLabels ? `<div class="flex gap-1 mb-2">${langLabels}</div>` : ''}
+            <div class="quote-text mb-1">${q.text}</div>
+            ${q.category ? `<div class="quote-category mb-2 text-sm" style="color: var(--highlight);">📁 ${escapeHtml(q.category)}</div>` : ''}
+            ${q.source ? `<div class="quote-source mb-2">—— ${escapeHtml(q.source)}${q.author ? ' / ' + escapeHtml(q.author) : ''}</div>` : ''}
+            ${q.thought ? `<div class="quote-thought mb-2"><div style="display:contents;">${q.thought.replace(/\n/g, '<br>')}</div></div>` : ''}
+            ${q.tags && q.tags.length ? `<div class="flex gap-1 flex-wrap mb-2">${q.tags.map(t => `<span class="tag-chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+            ${extractedHtml}
+            <div class="flex justify-between items-center mt-3">
+              <span class="text-xs" style="color: var(--text-secondary);">${new Date(q.date).toLocaleDateString('zh-CN')}</span>
+              <div class="flex gap-1">
+                <button onclick="openExtractModal(${q.id})" class="btn-secondary text-xs px-2 py-1">提取词句</button>
+                <button onclick="editQuote(${q.id})" class="btn-laser text-xs px-2 py-1">编辑</button>
+                <button onclick="deleteQuote(${q.id})" class="btn-danger text-xs px-2 py-1">删除</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function exportData() {
+      const data = JSON.stringify(quotes, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `自愈集_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (Array.isArray(imported)) {
+            quotes = [...imported, ...quotes];
+            saveQuotes();
+            renderTags();
+            renderQuotes();
+            alert('导入成功！');
+          } else {
+            alert('文件格式不正确');
+          }
+        } catch (err) {
+          alert('解析文件失败');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    init();
+  </script>
+</body>
+</html>
